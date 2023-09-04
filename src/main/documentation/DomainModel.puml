@@ -1,0 +1,41 @@
+@startuml
+
+object User{
+firstname
+lastname
+}
+object Interests{
+name
+link
+}
+object IntererstsInfo{
+type
+}
+object UserInfo{
+email
+adress
+age
+}
+object Phonenumber{
+phonenumber
+type
+}
+object Zip{
+zip
+cityName
+region
+municipality
+}
+object Adress{
+streetName
+number
+}
+
+Zip "1" -- "*" Adress
+Adress "1" -- "1" UserInfo
+Phonenumber "*" -- "1" UserInfo
+UserInfo "1" -- "1" User
+User "*" --  "*" Interests
+Interests "*"-- "*" IntererstsInfo
+
+@enduml
