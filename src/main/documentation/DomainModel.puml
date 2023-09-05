@@ -13,7 +13,6 @@ type
 }
 object UserInfo{
 email
-adress
 age
 }
 object Phonenumber{
@@ -26,13 +25,13 @@ cityName
 region
 municipality
 }
-object Adress{
+object Address{
 streetName
 number
 }
 
-Zip "1" -- "*" Adress
-Adress "1" -- "1" UserInfo
+Zip "1" -- "*" Address
+Address "1" -- "1" UserInfo
 Phonenumber "*" -- "1" UserInfo
 UserInfo "1" -- "1" User
 User "*" --  "*" Interests

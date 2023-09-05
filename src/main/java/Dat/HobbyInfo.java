@@ -6,13 +6,16 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+import java.util.HashSet;
+import java.util.Set;
+
 
 @Getter
 @NoArgsConstructor
 @ToString
-@Table(name = "interests_info")
+@Table(name = "hobby_info")
 @Entity
-public class InterestsInfo {
+public class HobbyInfo {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,7 +24,14 @@ public class InterestsInfo {
     @Column(name = "type")
     private InterestsType interestsType;
 
-    public InterestsInfo(InterestsType interestsType) {
+    @ManyToMany(mappedBy = "hobbyInfos")
+    private Set<Hobby> hobbies = new HashSet<>();
+
+    public void setInterest(Hobby hobby) {
+        hobbies.add(hobby);
+    }
+
+    public HobbyInfo(InterestsType interestsType) {
         this.interestsType = interestsType;
     }
 

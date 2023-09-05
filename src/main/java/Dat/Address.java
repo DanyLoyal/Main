@@ -13,9 +13,7 @@ import lombok.ToString;
 public class Address {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-
 
     @Column(name = "street_name")
     private String streetName;
@@ -24,8 +22,19 @@ public class Address {
     @Column(name = "number")
     private String number;
 
-    public Address(String streetName, String number) {
+    @ManyToOne
+    private Zip zip;
+
+    @MapsId
+    @OneToOne
+    private UserInfo userInfo;
+
+    public Address(String streetName, Zip zip, String number) {
         this.streetName = streetName;
         this.number = number;
+        this.zip = zip;
     }
+
+
+
 }

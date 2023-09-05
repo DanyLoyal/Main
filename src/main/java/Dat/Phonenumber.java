@@ -24,10 +24,16 @@ public class Phonenumber {
     @Enumerated(EnumType.STRING)
     @Column(name = "type")
     private PhoneType phoneType;
+    @ManyToOne
+    private UserInfo userInfo;
 
     public Phonenumber(int phonenumber, PhoneType phoneType) {
         this.phonenumber = phonenumber;
         this.phoneType = phoneType;
+    }
+
+    public void setUserinfo(UserInfo userInfo) {
+        this.userInfo = userInfo;
     }
 
     enum PhoneType {
@@ -35,6 +41,8 @@ public class Phonenumber {
         INTERNET_PHONE,
         LANDLINE;
     }
+
+
 
 
 }

@@ -59,11 +59,11 @@ public class HibernateConfig {
     private static void getAnnotationConfiguration(Configuration configuration) {
         // add annotated classes
         configuration.addAnnotatedClass(User.class);
-        configuration.addAnnotatedClass(Interests.class);
+        configuration.addAnnotatedClass(Hobby.class);
         configuration.addAnnotatedClass(Address.class);
-        configuration.addAnnotatedClass(InterestsInfo.class);
+        configuration.addAnnotatedClass(HobbyInfo.class);
         configuration.addAnnotatedClass(Phonenumber.class);
-        configuration.addAnnotatedClass(User.class);
+        configuration.addAnnotatedClass(UserInfo.class);
         configuration.addAnnotatedClass(Zip.class);
 
     }

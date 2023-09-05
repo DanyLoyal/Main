@@ -6,6 +6,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+import java.util.HashSet;
+import java.util.Set;
+
 
 @Getter
 @NoArgsConstructor
@@ -15,19 +18,38 @@ import lombok.ToString;
 public class UserInfo {
 
     @Id
-    @GeneratedValue
     private int id;
 
     @Column(name = "email")
     private String email;
-    @Column(name = "address")
-    private String address;
     @Column(name = "age")
     private int age;
 
-    public UserInfo(String email, String address, int age) {
+
+    @OneToOne (mappedBy = "userInfo")
+    private Address address;
+
+    @MapsId
+    @OneToOne
+    private User user;
+
+    @OneToMany(mappedBy = "userInfo")
+    Set<Phonenumber> phonenumbers = new HashSet<>();
+
+    public UserInfo(String email, Address address, int age) {
         this.email = email;
         this.address = address;
         this.age = age;
+        phonenumbers = new HashSet<>();
     }
+
+
+
+    public void setPhonenumber(Phonenumber phonenumber) {
+        phonenumbers.add(phonenumber);
+        phonenumber.setUserinfo(this);
+    }
+
+
+
 }
