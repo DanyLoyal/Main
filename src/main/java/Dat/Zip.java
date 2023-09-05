@@ -12,7 +12,7 @@ import java.util.Set;
 @Getter
 @NoArgsConstructor
 @ToString
-@Table(name="zip")
+@Table(name = "zip")
 @Entity
 public class Zip {
 
@@ -20,13 +20,13 @@ public class Zip {
     @GeneratedValue
     private int id;
 
-    @Column(name="zip")
+    @Column(name = "zip")
     private int zip;
-    @Column(name="city_name")
+    @Column(name = "city_name")
     private String cityName;
-    @Column(name="region")
+    @Column(name = "region")
     private String region;
-    @Column(name="municipality")
+    @Column(name = "municipality")
     private String municipality;
 
     public Zip(int zip, String cityName, String region, String municipality) {
@@ -35,9 +35,5 @@ public class Zip {
         this.region = region;
         this.municipality = municipality;
     }
-
-    @OneToMany
-    Set<Address> address = new HashSet<>();
-
 
 }

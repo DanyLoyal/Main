@@ -11,7 +11,7 @@ import java.lang.reflect.Type;
 @Getter
 @NoArgsConstructor
 @ToString
-@Table(name="phonenumber")
+@Table(name = "phonenumber")
 @Entity
 public class Phonenumber {
 
@@ -19,10 +19,10 @@ public class Phonenumber {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(name="phonenumber")
+    @Column(name = "phonenumber")
     private int phonenumber;
     @Enumerated(EnumType.STRING)
-    @Column(name="type")
+    @Column(name = "type")
     private PhoneType phoneType;
 
     public Phonenumber(int phonenumber, PhoneType phoneType) {
@@ -32,10 +32,9 @@ public class Phonenumber {
 
     enum PhoneType {
         MOBILE,
-    INTERNET_PHONE,
-    LANDLINE;
+        INTERNET_PHONE,
+        LANDLINE;
     }
-
 
 
 }

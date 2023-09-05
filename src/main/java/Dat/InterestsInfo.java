@@ -10,7 +10,7 @@ import lombok.ToString;
 @Getter
 @NoArgsConstructor
 @ToString
-@Table(name="interests_info")
+@Table(name = "interests_info")
 @Entity
 public class InterestsInfo {
 
@@ -18,23 +18,22 @@ public class InterestsInfo {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-     @Column(name="type")
+    @Column(name = "type")
     private InterestsType interestsType;
 
     public InterestsInfo(InterestsType interestsType) {
         this.interestsType = interestsType;
     }
 
-    enum InterestsType{
-         GENEREL,
-         INDENDØRS,
-         UDENDØRS,
-         KONKURRENCE,
-         OBSERVATION,
-         SAMLER_HOBBYER,
-         EDUCATIONAL_HOBBIES;
-     }
-
+    enum InterestsType {
+        GENEREL,
+        INDENDØRS,
+        UDENDØRS,
+        KONKURRENCE,
+        OBSERVATION,
+        SAMLER_HOBBYER,
+        EDUCATIONAL_HOBBIES;
+    }
 
 
 }

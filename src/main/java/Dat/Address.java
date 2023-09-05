@@ -8,7 +8,7 @@ import lombok.ToString;
 @Getter
 @NoArgsConstructor
 @ToString
-@Table(name ="address")
+@Table(name = "address")
 @Entity
 public class Address {
 

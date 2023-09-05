@@ -17,10 +17,10 @@ public class Interests {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(name="name")
+    @Column(name = "name")
     private String name;
 
-    @Column(name="link")
+    @Column(name = "link")
     private String link;
 
     public Interests(String name, String link) {
