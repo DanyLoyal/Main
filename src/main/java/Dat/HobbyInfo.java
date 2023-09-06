@@ -21,7 +21,8 @@ public class HobbyInfo {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(name = "type")
+    @Enumerated(EnumType.STRING)
+    @Column(name = "interestsType")
     private InterestsType interestsType;
 
     @ManyToMany(mappedBy = "hobbyInfos")
@@ -35,6 +36,7 @@ public class HobbyInfo {
         this.interestsType = interestsType;
     }
 
+
     enum InterestsType {
         GENEREL,
         INDENDØRS,
@@ -42,7 +44,7 @@ public class HobbyInfo {
         KONKURRENCE,
         OBSERVATION,
         SAMLER_HOBBYER,
-        EDUCATIONAL_HOBBIES;
+        EDUCATIONAL_HOBBIES
     }
 
 
