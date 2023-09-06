@@ -51,4 +51,14 @@ public class Hobby {
         hobbyInfos.add(hobbyInfo);
         hobbyInfo.setInterest(this);
     }
+
+    public boolean deleteHobby(){
+        for(HobbyInfo h: hobbyInfos){
+            h.removeHobby(this);
+        }
+        if(hobbyInfos.size() == 0){
+            return true;
+        }
+        return false;
+    }
 }

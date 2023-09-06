@@ -31,11 +31,15 @@ public class HobbyInfo {
         hobbies.add(hobby);
     }
 
+    public void removeHobby(Hobby hobby){
+        hobbies.remove(hobby);
+    }
+
     public HobbyInfo(InterestsType interestsType) {
         this.interestsType = interestsType;
     }
 
-    enum InterestsType {
+    public enum InterestsType {
         GENEREL,
         INDENDØRS,
         UDENDØRS,
