@@ -1,4 +1,4 @@
-INSERT INTO hobby_info (intereststype) VALUES ('GENEREL');
+aINSERT INTO hobby_info (intereststype) VALUES ('GENEREL');
 INSERT INTO hobby_info (intereststype) VALUES ('INDENDØRS');
 INSERT INTO hobby_info (intereststype) VALUES ('UDENDØRS');
 INSERT INTO hobby_info (intereststype) VALUES ('KONKURRENCE');

@@ -13,6 +13,9 @@ import java.util.Set;
 @NoArgsConstructor
 @ToString
 @Table(name = "users")
+@NamedQueries({
+        @NamedQuery(name ="User.findAll", query = "SELECT g FROM User g"),
+})
 @Entity
 public class User {
 
