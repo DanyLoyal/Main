@@ -28,16 +28,34 @@ public class HobbyInfo {
     @ManyToMany(mappedBy = "hobbyInfos")
     private Set<Hobby> hobbies = new HashSet<>();
 
-    public void setInterest(Hobby hobby) {
+    public void setHobby(Hobby hobby) {
         hobbies.add(hobby);
+    }
+
+    public void setInterestsType(InterestsType type){
+        this.interestsType = type;
     }
 
     public HobbyInfo(InterestsType interestsType) {
         this.interestsType = interestsType;
     }
 
+    public void removeHobby(Hobby hobby) {
+        hobbies.remove(hobby);
+    }
 
-    enum InterestsType {
+    public boolean deleteHobbyInfo(){
+        for(Hobby h: hobbies){
+            h.removeHobbyInfo(this);
+        }
+        if(hobbies.size() == 0){
+            return true;
+        }
+        return false;
+    }
+
+
+    public enum InterestsType {
         GENEREL,
         INDENDØRS,
         UDENDØRS,

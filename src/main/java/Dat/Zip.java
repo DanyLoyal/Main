@@ -13,6 +13,9 @@ import java.util.Set;
 @NoArgsConstructor
 @ToString
 @Table(name = "zipcode")
+@NamedQueries({
+        @NamedQuery(name = "Zip.findAll", query = "select z from Zip z")
+})
 @Entity
 public class Zip {
 
@@ -34,6 +37,8 @@ public class Zip {
         this.region = region;
         this.municipality = municipality;
     }
+
+
 
 
 

@@ -31,7 +31,6 @@ public class Hobby {
     private  Set<User>users = new HashSet<>();
 
     @ManyToMany
-
     @JoinTable(name = "hobby_hobby_info",
             joinColumns = @JoinColumn(name = "hobby_id"),
             inverseJoinColumns = @JoinColumn(name = "hobby_info_id")
@@ -49,6 +48,20 @@ public class Hobby {
 
     public void setInterestsInfo(HobbyInfo hobbyInfo) {
         hobbyInfos.add(hobbyInfo);
-        hobbyInfo.setInterest(this);
+        hobbyInfo.setHobby(this);
+    }
+
+    public boolean deleteHobby(){
+        for(HobbyInfo h: hobbyInfos){
+            h.removeHobby(this);
+        }
+        if(hobbyInfos.size() == 0){
+            return true;
+        }
+        return false;
+    }
+
+    public void removeHobbyInfo(HobbyInfo hobbyInfo) {
+        hobbyInfos.remove(hobbyInfo);
     }
 }
