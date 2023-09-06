@@ -36,6 +36,10 @@ public class HobbyInfo {
         this.interestsType = interestsType;
     }
 
+    public void removeHobby(Hobby hobby) {
+        hobbies.remove(hobby);
+    }
+
 
     enum InterestsType {
         GENEREL,
