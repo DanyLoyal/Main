@@ -15,35 +15,32 @@ import java.util.List;
 public class PhoneNumberDAO {
 
 
-    private EntityManagerFactory emf;
-    private EntityManager em;
+    private static EntityManagerFactory emf;
+    private static PhoneNumberDAO instance;
 
-    public PhoneNumberDAO(){
-        emf = Persistence.createEntityManagerFactory("hobby");
-        em = emf.createEntityManager();
+    public static PhoneNumberDAO getInstance( EntityManagerFactory _emf){
+        if (instance == null){
+            emf = _emf;
+            instance = new PhoneNumberDAO();
+        }return instance;
     }
 
     public void createPhoneNumber(Phonenumber phonenumber) {
-        EntityManager localEm = emf.createEntityManager();
-        try {
-        em.getTransaction().begin();
-        em.persist(phonenumber);
-        em.getTransaction().commit();
-    }finally {
-            if (localEm != null && localEm.isOpen())
-                localEm.close();
+        try(EntityManager localEm = emf.createEntityManager()) {
+        localEm.getTransaction().begin();
+        localEm.persist(phonenumber);
+        localEm.getTransaction().commit();
+     }
+    }
+
+    public List<Phonenumber> getPhoneNumbersByUser(int userId) {
+        try(EntityManager localEm = emf.createEntityManager()) {
+            TypedQuery<Phonenumber> query = localEm.createQuery("SELECT u FROM Phonenumber u WHERE u.userInfo.id = :userId", Phonenumber.class);
+            query.setParameter("userId", userId);
+            return query.getResultList();
         }
     }
 
-    public List<Phonenumber> getPhoneNumbersByUser(User user) {
-        EntityManager localEm = emf.createEntityManager();
-        try {
-            TypedQuery<Phonenumber> query = em.createQuery("SELECT u FROM Phonenumber u WHERE u.userInfo = :user", Phonenumber.class);
-            query.setParameter("user", user);
-            return query.getResultList();
-        }finally {
-            if (localEm != null && localEm.isOpen())
-                localEm.close();
-        }
-    }
+
+
 }
