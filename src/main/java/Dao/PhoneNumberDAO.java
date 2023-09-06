@@ -33,14 +33,11 @@ public class PhoneNumberDAO {
      }
     }
 
-    public List<Phonenumber> getPhoneNumbersByUser(int userId) {
+    public List<Phonenumber> getPhoneNumbersByUserId(int userId) {
         try(EntityManager localEm = emf.createEntityManager()) {
             TypedQuery<Phonenumber> query = localEm.createQuery("SELECT u FROM Phonenumber u WHERE u.userInfo.id = :userId", Phonenumber.class);
             query.setParameter("userId", userId);
             return query.getResultList();
         }
     }
-
-
-
 }
