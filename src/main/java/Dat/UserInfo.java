@@ -50,6 +50,10 @@ public class UserInfo {
         phonenumber.setUserinfo(this);
     }
 
+    public void setEmail(String email){
+        this.email = email;
+    }
+
 
 
 }
