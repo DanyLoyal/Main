@@ -1,9 +1,8 @@
 package DAO;
 
 import Dat.*;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.TypedQuery;
+import jakarta.persistence.*;
+import org.postgresql.core.NativeQuery;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -91,10 +90,13 @@ public class UserDAO {
 
     //***** US - 3 *****\\
     public List<User> findUsersByHobby(int hobbyId){
+        List<User> users = new ArrayList<>();
         try (EntityManager em = emf.createEntityManager()){
-            TypedQuery usersByHobby = em.createNamedQuery("User.findUsersByHobby", User.class);
-            usersByHobby.setParameter("id",hobbyId);
-            return usersByHobby.getResultList();
+            List<Integer> userIds = em.createNativeQuery("SELECT * FROM user_hobby WHERE hobby_id = "+hobbyId+";").getResultList();
+            for(Integer u: userIds){
+                users.add(em.find(User.class,u));
+            }
         }
+        return users;
     }
 }
