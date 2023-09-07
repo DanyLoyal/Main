@@ -51,7 +51,7 @@ public class ZipDAO {
     }
 
 
-    //US-7
+    //***** US - 7 *****\\
     public List<Zip> getCitiesAndPostcodes (){
 
         try (EntityManager em = emf.createEntityManager()){

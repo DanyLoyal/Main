@@ -24,6 +24,7 @@ public class UserInfoDAO {
         return instance;
     }
 
+
     public UserInfo saveUserInfo(UserInfo userInfo, User user){
         try(EntityManager em = emf.createEntityManager()){
             em.getTransaction().begin();

@@ -95,6 +95,7 @@ public class UserDAO {
         }
     }
 
+    //***** US - 6 *****\\
     public List<User> findUsersByCityName(String cityName){
         try(EntityManager em = emf.createEntityManager()){
             TypedQuery query = em.createNamedQuery("User.findByZip", User.class);
@@ -103,6 +104,7 @@ public class UserDAO {
         }
     }
 
+    //***** US - 8 *****\\
     public User findUserByPhonenumber(Phonenumber phonenumber){
         try(EntityManager em = emf.createEntityManager()){
             Phonenumber foundPhone = em.find(Phonenumber.class, phonenumber.getId());
