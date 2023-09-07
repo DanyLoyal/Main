@@ -56,6 +56,7 @@ public class UserDAO {
         }
     }
 
+    //***** US - 1 *****\\
     public User findUserById(int id) {
         try (var em = emf.createEntityManager()) {
             User user = em.find(User.class, id);
@@ -85,6 +86,15 @@ public class UserDAO {
         try(EntityManager em = emf.createEntityManager()){
             Phonenumber foundPhone = em.find(Phonenumber.class, phonenumber.getId());
             return foundPhone.getUserInfo().getUser();
+        }
+    }
+
+    //***** US - 3 *****\\
+    public List<User> findUsersByHobby(int hobbyId){
+        try (EntityManager em = emf.createEntityManager()){
+            TypedQuery usersByHobby = em.createNamedQuery("User.findUsersByHobby", User.class);
+            usersByHobby.setParameter("id",hobbyId);
+            return usersByHobby.getResultList();
         }
     }
 }

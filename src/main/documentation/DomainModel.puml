@@ -4,11 +4,11 @@ object User{
 firstname
 lastname
 }
-object Interests{
+object Hobby{
 name
 link
 }
-object IntererstsInfo{
+object HobbyInfo{
 type
 }
 object UserInfo{
@@ -30,11 +30,11 @@ streetName
 number
 }
 
-Zip "1" -- "*" Address
-Address "1" -- "1" UserInfo
-Phonenumber "*" -- "1" UserInfo
-UserInfo "1" -- "1" User
-User "*" --  "*" Interests
-Interests "*"-- "*" IntererstsInfo
+Zip "1" <--> "*" Address
+Address "1" <--> "1" UserInfo
+Phonenumber "*" <--> "1" UserInfo
+UserInfo "1" <--> "1" User
+User "*" <-->  "*" Hobby
+Hobby "*"<--> "*" HobbyInfo
 
 @enduml

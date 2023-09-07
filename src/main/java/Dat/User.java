@@ -14,7 +14,8 @@ import java.util.Set;
 @Table(name = "users")
 @NamedQueries({
         @NamedQuery(name ="User.findAll", query = "SELECT g FROM User g"),
-        @NamedQuery(name = "User.findByZip", query = "SELECT u FROM User u WHERE u.userInfo.address.zip.cityName = :cityName")
+        @NamedQuery(name = "User.findByZip", query = "SELECT u FROM User u WHERE u.userInfo.address.zip.cityName = :cityName"),
+        @NamedQuery(name="User.findUsersByHobby", query = "SELECT h FROM User h WHERE Hobby.id =: id")
 })
 @Entity
 public class User {
@@ -59,6 +60,7 @@ public class User {
         hobbies.add(hobby);
         hobby.setUser(this);
     }
+
 
 
 
