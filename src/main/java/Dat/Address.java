@@ -7,7 +7,6 @@ import lombok.ToString;
 
 @Getter
 @NoArgsConstructor
-@ToString
 @Table(name = "address")
 @Entity
 @NamedQueries({
@@ -39,5 +38,7 @@ public class Address {
     }
 
 
-
+    public void setUserInfo(UserInfo userInfo) {
+        this.userInfo = userInfo;
+    }
 }
