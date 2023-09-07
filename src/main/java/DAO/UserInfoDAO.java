@@ -6,6 +6,7 @@ import Dat.Phonenumber;
 import Dat.UserInfo;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.Query;
 import jakarta.persistence.TypedQuery;
 
 public class UserInfoDAO {
@@ -50,29 +51,29 @@ public class UserInfoDAO {
         return updatedInfo;
     }
 
-//    public boolean removeUserInfo(UserInfo userInfo){
-//        try(EntityManager em = emf.createEntityManager()){
-//            em.getTransaction().begin();
-//            TypedQuery<Phonenumber> query = em.createNamedQuery("Phonenumber.removeByUserID", Phonenumber.class);
-//            query.setParameter("id", userInfo.getId());
-//            query.executeUpdate();
-//            em.getTransaction().commit();
-//        }
-//        try(EntityManager em = emf.createEntityManager()){
-//            em.getTransaction().begin();
-//            TypedQuery<Address> query = em.createNamedQuery("Address.deleteByUserID", Address.class);
-//            query.setParameter("id", userInfo.getId());
-//            query.executeUpdate();
-//            em.getTransaction().commit();
-//        }
-//        try(EntityManager em = emf.createEntityManager()){
-//            em.getTransaction().begin();
-//            em.remove(userInfo);
-//            em.getTransaction().commit();
-//            if(em.find(UserInfo.class, userInfo.getId()) == null){
-//                return true;
-//            }
-//        }
-//        return false;
-//    }
+    public boolean removeUserInfo(UserInfo userInfo){
+        try(EntityManager em = emf.createEntityManager()){
+            em.getTransaction().begin();
+            Query query = em.createNamedQuery("Phonenumber.removeByUserID");
+            query.setParameter("id", userInfo.getId());
+            query.executeUpdate();
+            em.getTransaction().commit();
+        }
+        try(EntityManager em = emf.createEntityManager()){
+            em.getTransaction().begin();
+            Query query = em.createNamedQuery("Address.deleteByUserID");
+            query.setParameter("id", userInfo.getId());
+            query.executeUpdate();
+            em.getTransaction().commit();
+        }
+        try(EntityManager em = emf.createEntityManager()){
+            em.getTransaction().begin();
+            em.remove(userInfo);
+            em.getTransaction().commit();
+            if(em.find(UserInfo.class, userInfo.getId()) == null){
+                return true;
+            }
+        }
+        return false;
+    }
 }

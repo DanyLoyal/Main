@@ -45,6 +45,27 @@ public class UserDAO {
     }
 
     public void deleteUser(int id) {
+        try(EntityManager em = emf.createEntityManager()){
+            em.getTransaction().begin();
+            Query query = em.createNamedQuery("Address.deleteByUserID");
+            query.setParameter("id", id);
+            query.executeUpdate();
+            em.getTransaction().commit();
+        }
+        try(EntityManager em = emf.createEntityManager()){
+            em.getTransaction().begin();
+            Query query = em.createNamedQuery("Phonenumber.removeByUserID");
+            query.setParameter("id", id);
+            query.executeUpdate();
+            em.getTransaction().commit();
+        }
+        try(EntityManager em = emf.createEntityManager()){
+            em.getTransaction().begin();
+            Query query = em.createNamedQuery("UserInfo.DeleteUserInfoByID");
+            query.setParameter("id", id);
+            query.executeUpdate();
+            em.getTransaction().commit();
+        }
         try (var em = emf.createEntityManager()) {
             em.getTransaction().begin();
             User user = findUserById(id);
