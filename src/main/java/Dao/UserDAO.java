@@ -35,11 +35,12 @@ public class UserDAO {
         }
     }
 
-    public User updateUser(User user) {
+    public User updateUser(User user, Hobby hobby) {
         try (var em = emf.createEntityManager()) {
             em.getTransaction().begin();
+            user.setInterest(hobby);
             em.merge(user);
-            em.getTransaction().begin();
+            em.getTransaction().commit();
             return user;
         }
     }
@@ -113,7 +114,7 @@ public class UserDAO {
     public List<User> findUsersByHobby(int hobbyId){
         List<User> users = new ArrayList<>();
         try (EntityManager em = emf.createEntityManager()){
-            List<Integer> userIds = em.createNativeQuery("SELECT * FROM user_hobby WHERE hobby_id = "+hobbyId+";").getResultList();
+            List<Integer> userIds = em.createNativeQuery("SELECT user_id FROM user_hobby WHERE hobby_id = "+hobbyId+";").getResultList();
             for(Integer u: userIds){
                 users.add(em.find(User.class,u));
             }

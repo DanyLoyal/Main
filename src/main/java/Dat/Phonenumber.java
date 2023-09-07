@@ -10,7 +10,6 @@ import java.lang.reflect.Type;
 
 @Getter
 @NoArgsConstructor
-@ToString
 @Table(name = "phonenumber")
 @Entity
 @NamedQueries({

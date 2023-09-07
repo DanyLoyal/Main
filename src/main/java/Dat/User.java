@@ -35,7 +35,7 @@ public class User {
     @OneToOne (mappedBy = "user", cascade = CascadeType.PERSIST)
     private  UserInfo userInfo;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     //@JoinColumn (name = "user_id")
 
     @JoinTable(name = "user_hobby",

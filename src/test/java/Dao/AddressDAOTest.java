@@ -1,26 +1,26 @@
 package Dao;
 
 import Config.HibernateConfig;
+import DAO.AddressDAO;
 import DAO.UserDAO;
-import Dat.*;
+import Dat.Address;
+import Dat.Zip;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.*;
 
-class UserDAOTest {
+class AddressDAOTest {
 
     private EntityManagerFactory emf = HibernateConfig.getEntityManagerFactoryConfig("hobby_test");
-    private UserDAO userDAO = UserDAO.getInstance(emf);
+    private AddressDAO addressDAO = AddressDAO.getInstance(emf);
 
     @BeforeEach
-    void setUp() {
-        try (EntityManager em = emf.createEntityManager()) {
+    void setUp(){
+        try(EntityManager em = emf.createEntityManager()) {
             em.getTransaction().begin();
 
             em.createNativeQuery("INSERT INTO hobby_info(intereststype) VALUES('GENEREL');").executeUpdate();
@@ -42,7 +42,7 @@ class UserDAOTest {
             em.getTransaction().commit();
         }
 
-        try (EntityManager em = emf.createEntityManager()) {
+        try(EntityManager em = emf.createEntityManager()){
             em.getTransaction().begin();
 
             em.createNativeQuery("INSERT INTO public.user_info (user_id, age, email) VALUES (1, 25, 'carsten@danyalsen.dk');").executeUpdate();
@@ -60,7 +60,7 @@ class UserDAOTest {
             em.getTransaction().commit();
         }
 
-        try (EntityManager em = emf.createEntityManager()) {
+        try(EntityManager em = emf.createEntityManager()){
             em.getTransaction().begin();
 
             em.createNativeQuery("INSERT INTO public.user_hobby (user_id, hobby_id) VALUES (1, 1);").executeUpdate();
@@ -73,100 +73,49 @@ class UserDAOTest {
 
             em.getTransaction().commit();
         }
+
+        try(EntityManager em = emf.createEntityManager()){
+            em.getTransaction().begin();
+
+            em.getTransaction().commit();
+        }
     }
 
     @AfterEach
-    void tearDown() {
-        try (EntityManager em = emf.createEntityManager()) {
+    void tearDown(){
+        try(EntityManager em = emf.createEntityManager()){
             em.getTransaction().begin();
-            em.createNativeQuery("truncate address, user_info, users, phonenumber, hobby, hobby_hobby_info, hobby_info, user_hobby, zipcode RESTART IDENTITY;").executeUpdate();
+            em.createNativeQuery("truncate address, user_info, users, phonenumber, hobby, hobby_hobby_info, hobby_info, user_hobby,zipcode restart identity;").executeUpdate();
             em.getTransaction().commit();
         }
     }
 
     @Test
-    void createUser() {
-        Zip zip;
-        User createdUser;
-        try (EntityManager em = emf.createEntityManager()) {
-            zip = em.find(Zip.class, 1);
-            createdUser = UserDAO.getInstance(emf).createUser(new User("Bent", "Den Store"), new UserInfo("bent@denstore.dk", 142), new Address("Ben den stores vej", zip, "69"));
-        }
-        assertEquals(4, createdUser.getId());
-        assertNotNull(createdUser.getUserInfo());
-        assertNotEquals(1, createdUser.getUserInfo().getAddress().getId());
+    void findAddressByUserId() {
+
+        Address actual = addressDAO.findAddressByUserId(1);
+
+        Address expected = new Address("Carsten Danyalsens Allé", new Zip(), "20");
+
+        assertEquals(expected.getStreetName(),actual.getStreetName());
+        assertEquals(expected.getNumber(),actual.getNumber());
+
     }
 
     @Test
-    void deleteUser() {
-        UserDAO.getInstance(emf).deleteUser(1);
-        User foundUser;
-        try(EntityManager em = emf.createEntityManager()){
-            foundUser = em.find(User.class, 1);
-        }
-        assertNull(foundUser);
+    void updateAddress() {
+        int userIdToUpdate = 1;
+        Address existingAddress = addressDAO.findAddressByUserId(userIdToUpdate);
+
+        assertNotEquals("Hovedgaden",existingAddress.getStreetName());
+
+        existingAddress.setStreetName("Hovedgaden");
+
+        Address actual = addressDAO.updateAddress(existingAddress);
+                assertEquals("Hovedgaden", existingAddress.getStreetName());
+                assertEquals(existingAddress.getId(), actual.getId());
+
     }
 
-    @Test
-    void findUserById() {
-        User foundUser = UserDAO.getInstance(emf).findUserById(3);
-        assertEquals("Gangsta", foundUser.getFirstname());
-        assertEquals("99", foundUser.getUserInfo().getAddress().getNumber());
-    }
 
-    @Test
-    void findUsers() {
-        List<User> foundUsers = UserDAO.getInstance(emf).findUsers();
-        assertEquals(3, foundUsers.size());
-        assertEquals(1, foundUsers.get(0).getId());
-    }
-
-    @Test
-    void updateUser() {
-        User foundUser;
-        Hobby foundHobby1;
-        Hobby foundHobby2;
-        try(EntityManager em = emf.createEntityManager()){
-            foundUser = em.find(User.class, 1);
-            foundHobby1 = em.find(Hobby.class, 1);
-            foundHobby2 = em.find(Hobby.class, 2);
-        }
-        foundUser = UserDAO.getInstance(emf).updateUser(foundUser, foundHobby1);
-        assertEquals(1, foundUser.getHobbies().size());
-        foundUser = UserDAO.getInstance(emf).updateUser(foundUser, foundHobby2);
-        assertEquals(2, foundUser.getHobbies().size());
-    }
-
-    @Test
-    void findUsersByHobby() {
-        try(EntityManager em = emf.createEntityManager()){
-            em.getTransaction().begin();
-            em.createNativeQuery("INSERT INTO public.user_hobby (user_id, hobby_id) VALUES (2, 1);").executeUpdate();
-            em.getTransaction().commit();
-        }
-        List<User> usersForHobby1 = UserDAO.getInstance(emf).findUsersByHobby(1);
-        assertEquals(2, usersForHobby1.size());
-        List<User> usersForHobby2 = UserDAO.getInstance(emf).findUsersByHobby(2);
-        assertEquals(1, usersForHobby2.size());
-    }
-
-    @Test
-    void findUsersByPhonenumber() {
-        Phonenumber phonenumber;
-        try(EntityManager em = emf.createEntityManager()){
-            phonenumber = em.find(Phonenumber.class, 2);
-        }
-        User foundUser = UserDAO.getInstance(emf).findUserByPhonenumber(phonenumber);
-        assertEquals("Carsten", foundUser.getFirstname());
-        assertEquals("Danyalsen", foundUser.getLastname());
-        assertEquals(1, foundUser.getId());
-    }
-
-    @Test
-    void findUsersByCityName() {
-        List<User> foundUsers = UserDAO.getInstance(emf).findUsersByCityName("Karby");
-        assertEquals(1, foundUsers.size());
-        List<User> foundUsers2 = UserDAO.getInstance(emf).findUsersByCityName("Lyngby");
-        assertEquals(0, foundUsers2.size());
-    }
 }
