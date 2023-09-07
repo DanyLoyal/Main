@@ -100,30 +100,6 @@ class UserInfoDAOTest {
 
     }
 
-
-    //Creating userinfo without creating a user is not good coding. We therefore create a userinfo entity when creating a user
-    //instead of creating one as is, since userinfos id is a foreign key of Users primary key. It therefore wouldnt make sense to use this method
-
-  /*  @Test
-    void saveUserInfo() {
-        UserInfo userInfo;
-        UserInfo newUserInfo;
-        UserInfo testUserInfo;
-        User user;
-        try (EntityManager em = emf.createEntityManager()) {
-            userInfo = em.find(UserInfo.class, 1);
-            user = em.find(User.class, 1);
-        }
-        userInfoDAO.removeUserInfo(userInfo);
-        newUserInfo = new UserInfo("newmail@mail.com", 25);
-
-        testUserInfo = userInfoDAO.saveUserInfo(newUserInfo, user);
-
-        assertEquals(25, testUserInfo.getAge());
-        assertEquals("newmail@mail.com", testUserInfo.getEmail());
-    }
-   */
-
     @Test
     void getUserInfoByID() {
         UserInfo userInfo = userInfoDAO.getUserInfoByID(1);

@@ -36,7 +36,7 @@ public class UserInfo {
     private User user;
 
     @OneToMany(mappedBy = "userInfo")
-    Set<Phonenumber> phonenumbers = new HashSet<>();
+    private Set<Phonenumber> phonenumbers = new HashSet<>();
 
     public UserInfo(String email, int age) {
         this.email = email;

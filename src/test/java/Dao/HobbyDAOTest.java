@@ -169,14 +169,13 @@ class HobbyDAOTest {
 
     @Test
     void findAllHobbiesAndItsUsers() {
-
-
-        try (EntityManager em = emf.createEntityManager()) {
-
-
+            try(EntityManager em = emf.createEntityManager()){
+                em.getTransaction().begin();
+                em.createNativeQuery("INSERT INTO public.user_hobby (user_id, hobby_id) VALUES (2, 1);").executeUpdate();
+                em.getTransaction().commit();
+            }
             List<Hobby> hobbyList = new ArrayList<>();
             List<Integer> userList = new ArrayList<>();
-
 
             Map<Hobby, Integer> hobbies = new HashMap<>();
             hobbies = hobbyDAO.findAllHobbiesAndItsUsers();
@@ -188,13 +187,17 @@ class HobbyDAOTest {
             }
 
             assertEquals(3, hobbyList.size());
-            assertEquals(1, userList.get(1));
-            assertEquals(1, userList.get(1));
-            assertEquals(1, userList.get(1));
-
-
-        }
-
+            for(Hobby h: hobbyList){
+                if(h.getId() == 1){
+                    assertEquals(2, h.getUsers().size());
+                }
+                if(h.getId() == 2){
+                    assertEquals(1, h.getUsers().size());
+                }
+                if(h.getId() == 3){
+                    assertEquals(1, h.getUsers().size());
+                }
+            }
 
     }
 }
