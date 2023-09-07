@@ -23,7 +23,6 @@ public class AddressDAO {
 
     public Address saveAddress(Address address){
         try(EntityManager em = emf.createEntityManager()){
-
             em.getTransaction().begin();
             em.persist(address);
             em.getTransaction().commit();
