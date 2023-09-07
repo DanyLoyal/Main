@@ -31,7 +31,7 @@ public class Hobby {
     @ManyToMany(mappedBy = "hobbies", fetch = FetchType.EAGER)
     private  Set<User>users = new HashSet<>();
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "hobby_hobby_info",
             joinColumns = @JoinColumn(name = "hobby_id"),
             inverseJoinColumns = @JoinColumn(name = "hobby_info_id")
@@ -64,5 +64,6 @@ public class Hobby {
 
     public void removeHobbyInfo(HobbyInfo hobbyInfo) {
         hobbyInfos.remove(hobbyInfo);
+        hobbyInfo.removeHobby(this);
     }
 }

@@ -46,7 +46,7 @@ public class HobbyDAO {
             em.getTransaction().begin();
             em.remove(hobby);
             em.getTransaction().commit();
-            if(em.find(Hobby.class, hobby) == null){
+            if(em.find(Hobby.class, hobby.getId()) == null){
                 return true;
             }
         }

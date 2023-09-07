@@ -12,6 +12,7 @@ import java.util.Set;
 
 @Getter
 @NoArgsConstructor
+
 @Table(name = "hobby_info")
 @Entity
 public class HobbyInfo {
@@ -24,7 +25,7 @@ public class HobbyInfo {
     @Column(name = "interestsType")
     private InterestsType interestsType;
 
-    @ManyToMany(mappedBy = "hobbyInfos")
+    @ManyToMany(mappedBy = "hobbyInfos", fetch = FetchType.EAGER)
     private Set<Hobby> hobbies = new HashSet<>();
 
     public void setHobby(Hobby hobby) {

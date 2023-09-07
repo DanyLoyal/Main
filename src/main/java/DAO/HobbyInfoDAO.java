@@ -40,7 +40,7 @@ public class HobbyInfoDAO {
             em.getTransaction().begin();
             em.remove(hobbyInfo);
             em.getTransaction().commit();
-            if(em.find(HobbyInfo.class, hobbyInfo) == null){
+            if(em.find(HobbyInfo.class, hobbyInfo.getId()) == null){
                 return true;
             }
             return false;
