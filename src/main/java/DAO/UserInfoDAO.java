@@ -3,6 +3,7 @@ package DAO;
 import Config.HibernateConfig;
 import Dat.Address;
 import Dat.Phonenumber;
+import Dat.User;
 import Dat.UserInfo;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
@@ -23,9 +24,12 @@ public class UserInfoDAO {
         return instance;
     }
 
-    public UserInfo saveUserInfo(UserInfo userInfo){
+    public UserInfo saveUserInfo(UserInfo userInfo, User user){
         try(EntityManager em = emf.createEntityManager()){
             em.getTransaction().begin();
+            user.setUserInfo(userInfo);
+
+            em.merge(user);
             em.persist(userInfo);
             em.getTransaction().commit();
         }

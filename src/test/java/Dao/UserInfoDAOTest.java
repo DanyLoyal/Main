@@ -2,6 +2,10 @@ package Dao;
 
 import Config.HibernateConfig;
 import DAO.HobbyDAO;
+import DAO.UserDAO;
+import DAO.UserInfoDAO;
+import Dat.User;
+import Dat.UserInfo;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import org.junit.jupiter.api.AfterEach;
@@ -12,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class UserInfoDAOTest {
     private EntityManagerFactory emf = HibernateConfig.getEntityManagerFactoryConfig("hobby_test");
-    private HobbyDAO hobbyDAO = HobbyDAO.getInstance(emf);
+    private UserInfoDAO userInfoDAO = UserInfoDAO.getInstance(emf);
 
     @BeforeEach
     void setUp(){
@@ -85,17 +89,66 @@ class UserInfoDAOTest {
             em.getTransaction().commit();
         }
     }
-
     @Test
-    void saveUserInfo() {
+    void removeUserInfo(){
+        UserInfo userInfo;
+        try (EntityManager em = emf.createEntityManager()) {
+            userInfo = em.find(UserInfo.class, 1);
+        }
+            Boolean removeCheck = userInfoDAO.removeUserInfo(userInfo);
+            assertEquals(true, removeCheck);
 
     }
 
+  /*  @Test
+    void saveUserInfo() {
+        UserInfo userInfo;
+        UserInfo newUserInfo;
+        UserInfo testUserInfo;
+        User user;
+        try (EntityManager em = emf.createEntityManager()) {
+            userInfo = em.find(UserInfo.class, 1);
+            user = em.find(User.class, 1);
+        }
+
+        userInfoDAO.removeUserInfo(userInfo);
+        newUserInfo = new UserInfo("newmail@mail.com", 25);
+
+
+
+        testUserInfo = userInfoDAO.saveUserInfo(newUserInfo, user);
+
+        assertEquals(25, testUserInfo.getAge());
+        assertEquals("newmail@mail.com", testUserInfo.getEmail());
+
+
+    }
+
+   */
+
     @Test
     void getUserInfoByID() {
+        UserInfo userInfo = userInfoDAO.getUserInfoByID(1);
+
+        assertEquals(25, userInfo.getAge());
+        assertEquals("carsten@danyalsen.dk", userInfo.getEmail());
+        assertEquals("Carsten", userInfo.getUser().getFirstname());
+        assertEquals("Danyalsen", userInfo.getUser().getLastname());
+
+
     }
 
     @Test
     void updateEmail() {
+        UserInfo userInfo;
+        UserInfo newUserInfo;
+        try(EntityManager em = emf.createEntityManager()){
+            userInfo = em.find(UserInfo.class, 1);
+        }
+
+        newUserInfo = userInfoDAO.updateEmail(userInfo, "nymail@mail.com");
+
+        assertEquals("nymail@mail.com", newUserInfo.getEmail());
+
     }
 }
