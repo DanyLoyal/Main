@@ -26,7 +26,7 @@ public class Phonenumber {
     @Enumerated(EnumType.STRING)
     @Column(name = "type")
     private PhoneType phoneType;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private UserInfo userInfo;
 
     public Phonenumber(int phonenumber, PhoneType phoneType) {
@@ -38,7 +38,11 @@ public class Phonenumber {
         this.userInfo = userInfo;
     }
 
-    enum PhoneType {
+    public void setNumber(int phonenumber) {
+        this.phonenumber = phonenumber;
+    }
+
+    public enum PhoneType {
         MOBILE,
         INTERNET_PHONE,
         LANDLINE;

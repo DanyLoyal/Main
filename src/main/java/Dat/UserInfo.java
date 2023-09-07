@@ -35,7 +35,7 @@ public class UserInfo {
     @OneToOne
     private User user;
 
-    @OneToMany(mappedBy = "userInfo")
+    @OneToMany(mappedBy = "userInfo",fetch = FetchType.EAGER)
     Set<Phonenumber> phonenumbers = new HashSet<>();
 
     public UserInfo(String email, int age) {
