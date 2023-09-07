@@ -2,6 +2,7 @@ package DAO;
 
 import Dat.Phonenumber;
 import Dat.User;
+import Dat.UserInfo;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
@@ -26,12 +27,14 @@ public class PhoneNumberDAO {
         return instance;
     }
 
-    public void createPhoneNumber(Phonenumber phonenumber) {
+    public Phonenumber createPhoneNumber(Phonenumber phonenumber, UserInfo userInfo) {
         try (EntityManager localEm = emf.createEntityManager()) {
             localEm.getTransaction().begin();
+            userInfo.setPhonenumber(phonenumber);
             localEm.persist(phonenumber);
             localEm.getTransaction().commit();
         }
+        return phonenumber;
     }
 
     public List<Phonenumber> getPhoneNumbersByUserId(int userId) {
@@ -42,11 +45,12 @@ public class PhoneNumberDAO {
         }
     }
 
-    public Phonenumber updatePhoneNumber(Phonenumber phonenumber) {
+    public Phonenumber updatePhoneNumber(Phonenumber phonenumber, int newNumber) {
         try (var em = emf.createEntityManager()) {
             em.getTransaction().begin();
+            phonenumber.setNumber(newNumber);
             em.merge(phonenumber);
-            em.getTransaction().begin();
+            em.getTransaction().commit();
             return phonenumber;
         }
     }
