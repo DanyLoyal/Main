@@ -14,6 +14,9 @@ import java.util.Set;
 @NoArgsConstructor
 @Table(name = "user_info")
 @Entity
+@NamedQueries({
+        @NamedQuery(name = "UserInfo.DeleteUserInfoByID", query = "DELETE FROM UserInfo u WHERE u.id = :id")
+})
 public class UserInfo {
 
     @Id

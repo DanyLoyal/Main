@@ -3,9 +3,11 @@ package DAO;
 import Config.HibernateConfig;
 import Dat.Address;
 import Dat.Phonenumber;
+import Dat.User;
 import Dat.UserInfo;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.Query;
 import jakarta.persistence.TypedQuery;
 
 public class UserInfoDAO {
@@ -22,9 +24,12 @@ public class UserInfoDAO {
         return instance;
     }
 
-    public UserInfo saveUserInfo(UserInfo userInfo){
+    public UserInfo saveUserInfo(UserInfo userInfo, User user){
         try(EntityManager em = emf.createEntityManager()){
             em.getTransaction().begin();
+            user.setUserInfo(userInfo);
+
+            em.merge(user);
             em.persist(userInfo);
             em.getTransaction().commit();
         }
@@ -50,29 +55,29 @@ public class UserInfoDAO {
         return updatedInfo;
     }
 
-//    public boolean removeUserInfo(UserInfo userInfo){
-//        try(EntityManager em = emf.createEntityManager()){
-//            em.getTransaction().begin();
-//            TypedQuery<Phonenumber> query = em.createNamedQuery("Phonenumber.removeByUserID", Phonenumber.class);
-//            query.setParameter("id", userInfo.getId());
-//            query.executeUpdate();
-//            em.getTransaction().commit();
-//        }
-//        try(EntityManager em = emf.createEntityManager()){
-//            em.getTransaction().begin();
-//            TypedQuery<Address> query = em.createNamedQuery("Address.deleteByUserID", Address.class);
-//            query.setParameter("id", userInfo.getId());
-//            query.executeUpdate();
-//            em.getTransaction().commit();
-//        }
-//        try(EntityManager em = emf.createEntityManager()){
-//            em.getTransaction().begin();
-//            em.remove(userInfo);
-//            em.getTransaction().commit();
-//            if(em.find(UserInfo.class, userInfo.getId()) == null){
-//                return true;
-//            }
-//        }
-//        return false;
-//    }
+    public boolean removeUserInfo(UserInfo userInfo){
+        try(EntityManager em = emf.createEntityManager()){
+            em.getTransaction().begin();
+            Query query = em.createNamedQuery("Phonenumber.removeByUserID");
+            query.setParameter("id", userInfo.getId());
+            query.executeUpdate();
+            em.getTransaction().commit();
+        }
+        try(EntityManager em = emf.createEntityManager()){
+            em.getTransaction().begin();
+            Query query = em.createNamedQuery("Address.deleteByUserID");
+            query.setParameter("id", userInfo.getId());
+            query.executeUpdate();
+            em.getTransaction().commit();
+        }
+        try(EntityManager em = emf.createEntityManager()){
+            em.getTransaction().begin();
+            em.remove(userInfo);
+            em.getTransaction().commit();
+            if(em.find(UserInfo.class, userInfo.getId()) == null){
+                return true;
+            }
+        }
+        return false;
+    }
 }
