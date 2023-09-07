@@ -14,7 +14,7 @@ import java.lang.reflect.Type;
 @Table(name = "phonenumber")
 @Entity
 @NamedQueries({
-        @NamedQuery(name = "Phonenumber.removeByUserID", query = "DELETE Phonenumber p WHERE Phonenumber.userInfo.id = :id")
+        @NamedQuery(name = "Phonenumber.removeByUserID", query = "DELETE Phonenumber p WHERE p.userInfo.id = :id")
 })
 public class Phonenumber {
 
