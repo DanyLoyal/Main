@@ -3,10 +3,13 @@ package DAO;
 import Config.HibernateConfig;
 import Dat.Hobby;
 import Dat.HobbyInfo;
+import Dat.User;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Query;
 import jakarta.persistence.TypedQuery;
+
+import java.util.*;
 
 public class HobbyDAO {
 
@@ -69,14 +72,26 @@ public class HobbyDAO {
         return foundHobby;
     }
 
-    public int getNumberofUsersForHobby (int hobbyId){
-        int foundNumber = 0;
-        try(EntityManager em = emf.createEntityManager()){
-            TypedQuery typedQuery = em.createNamedQuery("Hobby.findHobbyUsersByHobbyId", Hobby.class);
-            typedQuery.setParameter("hobby_id", hobbyId);
-            foundNumber = typedQuery.getResultList().size();
+    public int findAmountOfUsersForHobby(int hobbyId){
+        int size = 0;
 
+        try (EntityManager em = emf.createEntityManager()){
+            List<Integer> userIds = em.createNativeQuery("SELECT * FROM user_hobby WHERE hobby_id = "+hobbyId+";").getResultList();
+            size = userIds.size();
         }
-        return foundNumber;
+        return size;
+    }
+
+    public Map<Hobby, Integer> findAllHobbiesAndItsUsers(){
+        Map<Hobby, Integer> hobbies = new HashMap<>();
+
+        try (EntityManager em = emf.createEntityManager()){
+            List<Hobby> hobbyList = em.createNamedQuery("Hobby.findAllHobbies", Hobby.class).getResultList();
+
+            for(Hobby u: hobbyList){
+                hobbies.put(u, u.getUsers().size());
+            }
+        }
+        return hobbies;
     }
 }

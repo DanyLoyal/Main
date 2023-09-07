@@ -14,7 +14,7 @@ import java.util.Set;
 @ToString
 @Table(name ="hobby")
 @NamedQueries({
-        @NamedQuery(name ="Hobby.findHobbyUsersByHobbyId", query = "SELECT p FROM Hobby p WHERE Hobby.users= :hobby_id")
+        @NamedQuery(name ="Hobby.findAllHobbies", query = "SELECT h FROM Hobby h")
 })
 @Entity
 public class Hobby {
