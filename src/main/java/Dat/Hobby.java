@@ -11,7 +11,6 @@ import java.util.Set;
 
 @Getter
 @NoArgsConstructor
-@ToString
 @Table(name ="hobby")
 @NamedQueries({
         @NamedQuery(name ="Hobby.findAllHobbies", query = "SELECT h FROM Hobby h")
@@ -29,7 +28,7 @@ public class Hobby {
     @Column(name = "wikiLink")
     private String link;
 
-    @ManyToMany(mappedBy = "hobbies")
+    @ManyToMany(mappedBy = "hobbies", fetch = FetchType.EAGER)
     private  Set<User>users = new HashSet<>();
 
     @ManyToMany

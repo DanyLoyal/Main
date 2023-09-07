@@ -12,7 +12,6 @@ import java.util.Set;
 
 @Getter
 @NoArgsConstructor
-@ToString
 @Table(name = "hobby_info")
 @Entity
 public class HobbyInfo {

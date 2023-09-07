@@ -73,12 +73,6 @@ class UserDAOTest {
 
             em.getTransaction().commit();
         }
-
-        try (EntityManager em = emf.createEntityManager()) {
-            em.getTransaction().begin();
-
-            em.getTransaction().commit();
-        }
     }
 
     @AfterEach
@@ -130,26 +124,49 @@ class UserDAOTest {
     @Test
     void updateUser() {
         User foundUser;
+        Hobby foundHobby1;
+        Hobby foundHobby2;
         try(EntityManager em = emf.createEntityManager()){
             foundUser = em.find(User.class, 1);
-            foundUser.setInterest(em.find(Hobby.class, 1));
-            UserDAO.getInstance(emf).updateUser(foundUser);
+            foundHobby1 = em.find(Hobby.class, 1);
+            foundHobby2 = em.find(Hobby.class, 2);
         }
+        foundUser = UserDAO.getInstance(emf).updateUser(foundUser, foundHobby1);
         assertEquals(1, foundUser.getHobbies().size());
+        foundUser = UserDAO.getInstance(emf).updateUser(foundUser, foundHobby2);
+        assertEquals(2, foundUser.getHobbies().size());
     }
 
     @Test
     void findUsersByHobby() {
-
+        try(EntityManager em = emf.createEntityManager()){
+            em.getTransaction().begin();
+            em.createNativeQuery("INSERT INTO public.user_hobby (user_id, hobby_id) VALUES (2, 1);").executeUpdate();
+            em.getTransaction().commit();
+        }
+        List<User> usersForHobby1 = UserDAO.getInstance(emf).findUsersByHobby(1);
+        assertEquals(2, usersForHobby1.size());
+        List<User> usersForHobby2 = UserDAO.getInstance(emf).findUsersByHobby(2);
+        assertEquals(1, usersForHobby2.size());
     }
 
     @Test
     void findUsersByPhonenumber() {
-
+        Phonenumber phonenumber;
+        try(EntityManager em = emf.createEntityManager()){
+            phonenumber = em.find(Phonenumber.class, 2);
+        }
+        User foundUser = UserDAO.getInstance(emf).findUserByPhonenumber(phonenumber);
+        assertEquals("Carsten", foundUser.getFirstname());
+        assertEquals("Danyalsen", foundUser.getLastname());
+        assertEquals(1, foundUser.getId());
     }
 
     @Test
     void findUsersByCityName() {
-
+        List<User> foundUsers = UserDAO.getInstance(emf).findUsersByCityName("Karby");
+        assertEquals(1, foundUsers.size());
+        List<User> foundUsers2 = UserDAO.getInstance(emf).findUsersByCityName("Lyngby");
+        assertEquals(0, foundUsers2.size());
     }
 }
