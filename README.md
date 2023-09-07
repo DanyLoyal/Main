@@ -8,8 +8,25 @@ Pelle, Danyal, Nicolai, Carsten
 The business idea is to create a platform that not only provides information about people and their hobbies but also offers a matchmaking service. Users can input their hobbies and interests, and the platform can connect them with like-minded individuals or groups in their local area. This would add a social networking element to the service and encourage people to explore new hobbies together, fostering real-world connections.
 
 ![DomainModelPic.png](src%2Fmain%2Fdocumentation%2FDomainModelPic.png)
-### Domaain model description
+### Domaine Model Description
  
+Originally we thought of having only 2 entities: Hobby and User. Later we decided to add Userinfo to manage information about the user. We then added the phonenumber entity to manage phonenumbers for the user, in case the user has multiple phone numbers, work phone, home phone etc.
+The address entity was made to store the address for the user, with the connection to the zip entity. The zip entity would manage all of the danish zipcodes, citynames, regions and municipalities.
+Like we did with the userinfo managing info for the user, we also decided to include a hobbyInfo entity, which would do the same for the Hobby entity, this time managing types of hobbies using ENUM.
+
+### EER Model Description
+
+As described in the "Domaine Model Description", we decided on adding a lot of tables after our original two.
+The user and hobby entities would be the parent entities of the rest.
+Userinfos Id would be a foreign key of Users primary key, so it wouldnt be possible for an entity of userinfo to exist without the parent.
+Phonenumber and adress would have their own generated primary keys, but would contain a foreign key for the user entity. The idea behind it was that a user could have multiple phonenumbers and adresses, which otherwise wouldnt be possible.
+As formerly mentioned zipcode would manage the zipcodes and cities of Denmark, with the zipcode being the primary key. The address entity would then contain a foreign key for zip.
+
+To maintain a manytomany relationship between users and hobbies, we created another table in the DB called user_hobby. This would contain the primary keys of users and its hobbies.
+
+Hobbyinfo would contain its own generated primary key and it would contain enums for the different types of hobbies. Each hobby would then be able to have multiple types like "outdoor" and "competition".
+
+To manage the manytomany relationship between hobby and hobbyinfo, we would include a table called hobby_hobby_info containing the primary keys of hobby and hobby_info.
 
 
 ![EERModelPic.png](src%2Fmain%2Fdocumentation%2FEERModelPic.png)

@@ -23,7 +23,6 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-
     @Column(name = "firstname")
     private String firstname;
 
@@ -36,13 +35,10 @@ public class User {
     private  UserInfo userInfo;
 
     @ManyToMany(fetch = FetchType.EAGER)
-    //@JoinColumn (name = "user_id")
-
     @JoinTable(name = "user_hobby",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "hobby_id")
     )
-
     private Set<Hobby> hobbies = new HashSet<>();
 
     public User(String firstname, String lastname) {

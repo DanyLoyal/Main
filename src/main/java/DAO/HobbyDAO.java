@@ -72,6 +72,7 @@ public class HobbyDAO {
         return foundHobby;
     }
 
+    //***** US - 4 *****\\
     public int findAmountOfUsersForHobby(int hobbyId){
         int size = 0;
 
@@ -82,6 +83,7 @@ public class HobbyDAO {
         return size;
     }
 
+    //***** US - 5 *****\\
     public Map<Hobby, Integer> findAllHobbiesAndItsUsers(){
         Map<Hobby, Integer> hobbies = new HashMap<>();
 
