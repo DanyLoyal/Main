@@ -10,6 +10,9 @@ import lombok.ToString;
 @ToString
 @Table(name = "address")
 @Entity
+@NamedQueries({
+        //@NamedQuery(name = "Address.deleteByUserID", query = "DELETE Address a WHERE Address.userInfo.id = :id")
+})
 public class Address {
 
     @Id

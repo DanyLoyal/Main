@@ -14,7 +14,8 @@ import java.util.Set;
 @ToString
 @Table(name = "zipcode")
 @NamedQueries({
-        @NamedQuery(name = "Zip.findAll", query = "select z from Zip z")
+        @NamedQuery(name = "Zip.findAll", query = "select z from Zip z"),
+        @NamedQuery(name = "Zip.findByCityName", query = "SELECT z from Zip z WHERE cityName = :cityName")
 })
 @Entity
 public class Zip {
