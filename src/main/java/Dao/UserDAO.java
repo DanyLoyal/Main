@@ -1,8 +1,6 @@
-package Dao;
+package DAO;
 
-import Dat.Phonenumber;
-import Dat.User;
-import Dat.Zip;
+import Dat.*;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.TypedQuery;
@@ -27,7 +25,9 @@ public class UserDAO {
         return instance;
     }
 
-    public User createUser(User user) {
+    public User createUser(User user, UserInfo userInfo, Address address) {
+        user.setUserInfo(userInfo);
+        userInfo.setAddress(address);
         try (var em = emf.createEntityManager()) {
             em.getTransaction().begin();
             em.persist(user);
