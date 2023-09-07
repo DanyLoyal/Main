@@ -1,9 +1,8 @@
 package DAO;
 
 import Dat.*;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.TypedQuery;
+import jakarta.persistence.*;
+import org.postgresql.core.NativeQuery;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,6 +55,7 @@ public class UserDAO {
         }
     }
 
+    //***** US - 1 *****\\
     public User findUserById(int id) {
         try (var em = emf.createEntityManager()) {
             User user = em.find(User.class, id);
@@ -86,5 +86,17 @@ public class UserDAO {
             Phonenumber foundPhone = em.find(Phonenumber.class, phonenumber.getId());
             return foundPhone.getUserInfo().getUser();
         }
+    }
+
+    //***** US - 3 *****\\
+    public List<User> findUsersByHobby(int hobbyId){
+        List<User> users = new ArrayList<>();
+        try (EntityManager em = emf.createEntityManager()){
+            List<Integer> userIds = em.createNativeQuery("SELECT * FROM user_hobby WHERE hobby_id = "+hobbyId+";").getResultList();
+            for(Integer u: userIds){
+                users.add(em.find(User.class,u));
+            }
+        }
+        return users;
     }
 }
