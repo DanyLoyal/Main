@@ -41,4 +41,8 @@ public class Address {
     public void setUserInfo(UserInfo userInfo) {
         this.userInfo = userInfo;
     }
+
+    public void setStreetName(String streetName) {
+        this.streetName = streetName;
+    }
 }
