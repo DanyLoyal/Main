@@ -5,6 +5,8 @@ import Dat.Hobby;
 import Dat.HobbyInfo;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.Query;
+import jakarta.persistence.TypedQuery;
 
 public class HobbyDAO {
 
@@ -65,5 +67,16 @@ public class HobbyDAO {
             foundHobby = em.find(Hobby.class, id);
         }
         return foundHobby;
+    }
+
+    public int getNumberofUsersForHobby (int hobbyId){
+        int foundNumber = 0;
+        try(EntityManager em = emf.createEntityManager()){
+            TypedQuery typedQuery = em.createNamedQuery("Hobby.findHobbyUsersByHobbyId", Hobby.class);
+            typedQuery.setParameter("hobby_id", hobbyId);
+            foundNumber = typedQuery.getResultList().size();
+
+        }
+        return foundNumber;
     }
 }

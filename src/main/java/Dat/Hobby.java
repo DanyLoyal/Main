@@ -13,6 +13,9 @@ import java.util.Set;
 @NoArgsConstructor
 @ToString
 @Table(name ="hobby")
+@NamedQueries({
+        @NamedQuery(name ="Hobby.findHobbyUsersByHobbyId", query = "SELECT p FROM Hobby p WHERE Hobby.users= :hobby_id")
+})
 @Entity
 public class Hobby {
 
@@ -27,7 +30,6 @@ public class Hobby {
     private String link;
 
     @ManyToMany(mappedBy = "hobbies")
-
     private  Set<User>users = new HashSet<>();
 
     @ManyToMany
