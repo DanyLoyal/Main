@@ -1,26 +1,34 @@
 package Dao;
 
 import Config.HibernateConfig;
+import DAO.HobbyDAO;
 import DAO.UserDAO;
-import Dat.*;
+import Dat.Hobby;
+import Dat.HobbyInfo;
+import Dat.User;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.criteria.CriteriaBuilder;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import static Dat.HobbyInfo.InterestsType.UDENDØRS;
 import static org.junit.jupiter.api.Assertions.*;
 
-class UserDAOTest {
+class HobbyDAOTest {
 
     private EntityManagerFactory emf = HibernateConfig.getEntityManagerFactoryConfig("hobby_test");
-    private UserDAO userDAO = UserDAO.getInstance(emf);
+    private HobbyDAO hobbyDAO = HobbyDAO.getInstance(emf);
 
     @BeforeEach
-    void setUp() {
-        try (EntityManager em = emf.createEntityManager()) {
+    void setUp(){
+        try(EntityManager em = emf.createEntityManager()) {
             em.getTransaction().begin();
 
             em.createNativeQuery("INSERT INTO hobby_info(intereststype) VALUES('GENEREL');").executeUpdate();
@@ -42,7 +50,7 @@ class UserDAOTest {
             em.getTransaction().commit();
         }
 
-        try (EntityManager em = emf.createEntityManager()) {
+        try(EntityManager em = emf.createEntityManager()){
             em.getTransaction().begin();
 
             em.createNativeQuery("INSERT INTO public.user_info (user_id, age, email) VALUES (1, 25, 'carsten@danyalsen.dk');").executeUpdate();
@@ -60,7 +68,7 @@ class UserDAOTest {
             em.getTransaction().commit();
         }
 
-        try (EntityManager em = emf.createEntityManager()) {
+        try(EntityManager em = emf.createEntityManager()){
             em.getTransaction().begin();
 
             em.createNativeQuery("INSERT INTO public.user_hobby (user_id, hobby_id) VALUES (1, 1);").executeUpdate();
@@ -73,100 +81,120 @@ class UserDAOTest {
 
             em.getTransaction().commit();
         }
+
+        try(EntityManager em = emf.createEntityManager()){
+            em.getTransaction().begin();
+
+            em.getTransaction().commit();
+        }
     }
 
     @AfterEach
-    void tearDown() {
-        try (EntityManager em = emf.createEntityManager()) {
+    void tearDown(){
+        try(EntityManager em = emf.createEntityManager()){
             em.getTransaction().begin();
-            em.createNativeQuery("truncate address, user_info, users, phonenumber, hobby, hobby_hobby_info, hobby_info, user_hobby, zipcode RESTART IDENTITY;").executeUpdate();
+            em.createNativeQuery("truncate address, user_info, users, phonenumber, hobby, hobby_hobby_info, hobby_info, user_hobby, zipcode restart identity;").executeUpdate();
             em.getTransaction().commit();
         }
     }
 
     @Test
-    void createUser() {
-        Zip zip;
-        User createdUser;
+    void saveHobby() {
+
+        Hobby hobby;
+        Hobby expectedHobby;
+        hobby = new Hobby("Ringridning", "https://da.wikipedia.org/wiki/Ringridning");
+
+        expectedHobby = hobbyDAO.saveHobby(hobby);
+        assertEquals(4, expectedHobby.getId());
+        assertEquals("Ringridning", expectedHobby.getName());
+        assertEquals("https://da.wikipedia.org/wiki/Ringridning", expectedHobby.getLink());
+
+
+    }
+
+    @Test
+    void updateHobbyTypes() {
+        Hobby hobby;
+        Hobby expectedHobby;
+        HobbyInfo hobbyInfo;
+
+        try(EntityManager em = emf.createEntityManager()) {
+
+            hobby = new Hobby("Ringridning", "https://da.wikipedia.org/wiki/Ringridning");
+            hobbyInfo = em.find(HobbyInfo.class, 3);
+            expectedHobby = hobbyDAO.updateHobbyTypes(hobby, hobbyInfo);
+
+            assertEquals(1, expectedHobby.getHobbyInfos().size());
+
+        }
+    }
+
+
+    @Test
+    void removeHobby() {
+
+        Hobby hobby;
+        HobbyInfo hobbyInfo;
+        try(EntityManager em = emf.createEntityManager()) {
+
+            hobby = new Hobby("Ringridning", "https://da.wikipedia.org/wiki/Ringridning");
+            hobbyInfo = em.find(HobbyInfo.class, 3);
+            hobbyDAO.updateHobbyTypes(hobby, hobbyInfo);
+            hobbyDAO.saveHobby(hobby);
+
+            Boolean removeCheck = hobbyDAO.removeHobby(hobby);
+            assertEquals(true, removeCheck);
+        }
+    }
+
+
+
+    @Test
+    void getHobbyById() {
+
+        assertEquals("Akrobatik", hobbyDAO.getHobbyById(2).getName());
+        assertEquals("https://en.wikipedia.org/wiki/Acrobatics", hobbyDAO.getHobbyById(2).getLink());
+    }
+
+    @Test
+    void findAmountOfUsersForHobby() {
+
+        assertEquals(1, hobbyDAO.findAmountOfUsersForHobby(1));
+        assertEquals(1, hobbyDAO.findAmountOfUsersForHobby(2));
+        assertEquals(1, hobbyDAO.findAmountOfUsersForHobby(3));
+
+    }
+
+
+    @Test
+    void findAllHobbiesAndItsUsers() {
+
+
         try (EntityManager em = emf.createEntityManager()) {
-            zip = em.find(Zip.class, 1);
-            createdUser = UserDAO.getInstance(emf).createUser(new User("Bent", "Den Store"), new UserInfo("bent@denstore.dk", 142), new Address("Ben den stores vej", zip, "69"));
+
+
+            List<Hobby> hobbyList = new ArrayList<>();
+            List<Integer> userList = new ArrayList<>();
+
+
+            Map<Hobby, Integer> hobbies = new HashMap<>();
+            hobbies = hobbyDAO.findAllHobbiesAndItsUsers();
+            System.out.println("Found hobbies are: " + hobbies);
+
+            for (Map.Entry<Hobby, Integer> h : hobbies.entrySet()) {
+                hobbyList.add(h.getKey());
+                userList.add(h.getValue());
+            }
+
+            assertEquals(3, hobbyList.size());
+            assertEquals(1, userList.get(1));
+            assertEquals(1, userList.get(1));
+            assertEquals(1, userList.get(1));
+
+
         }
-        assertEquals(4, createdUser.getId());
-        assertNotNull(createdUser.getUserInfo());
-        assertNotEquals(1, createdUser.getUserInfo().getAddress().getId());
-    }
 
-    @Test
-    void deleteUser() {
-        UserDAO.getInstance(emf).deleteUser(1);
-        User foundUser;
-        try(EntityManager em = emf.createEntityManager()){
-            foundUser = em.find(User.class, 1);
-        }
-        assertNull(foundUser);
-    }
 
-    @Test
-    void findUserById() {
-        User foundUser = UserDAO.getInstance(emf).findUserById(3);
-        assertEquals("Gangsta", foundUser.getFirstname());
-        assertEquals("99", foundUser.getUserInfo().getAddress().getNumber());
-    }
-
-    @Test
-    void findUsers() {
-        List<User> foundUsers = UserDAO.getInstance(emf).findUsers();
-        assertEquals(3, foundUsers.size());
-        assertEquals(1, foundUsers.get(0).getId());
-    }
-
-    @Test
-    void updateUser() {
-        User foundUser;
-        Hobby foundHobby1;
-        Hobby foundHobby2;
-        try(EntityManager em = emf.createEntityManager()){
-            foundUser = em.find(User.class, 1);
-            foundHobby1 = em.find(Hobby.class, 1);
-            foundHobby2 = em.find(Hobby.class, 2);
-        }
-        foundUser = UserDAO.getInstance(emf).updateUser(foundUser, foundHobby1);
-        assertEquals(1, foundUser.getHobbies().size());
-        foundUser = UserDAO.getInstance(emf).updateUser(foundUser, foundHobby2);
-        assertEquals(2, foundUser.getHobbies().size());
-    }
-
-    @Test
-    void findUsersByHobby() {
-        try(EntityManager em = emf.createEntityManager()){
-            em.getTransaction().begin();
-            em.createNativeQuery("INSERT INTO public.user_hobby (user_id, hobby_id) VALUES (2, 1);").executeUpdate();
-            em.getTransaction().commit();
-        }
-        List<User> usersForHobby1 = UserDAO.getInstance(emf).findUsersByHobby(1);
-        assertEquals(2, usersForHobby1.size());
-        List<User> usersForHobby2 = UserDAO.getInstance(emf).findUsersByHobby(2);
-        assertEquals(1, usersForHobby2.size());
-    }
-
-    @Test
-    void findUsersByPhonenumber() {
-        Phonenumber phonenumber;
-        try(EntityManager em = emf.createEntityManager()){
-            phonenumber = em.find(Phonenumber.class, 2);
-        }
-        User foundUser = UserDAO.getInstance(emf).findUserByPhonenumber(phonenumber);
-        assertEquals("Carsten", foundUser.getFirstname());
-        assertEquals("Danyalsen", foundUser.getLastname());
-        assertEquals(1, foundUser.getId());
-    }
-
-    @Test
-    void findUsersByCityName() {
-        List<User> foundUsers = UserDAO.getInstance(emf).findUsersByCityName("Karby");
-        assertEquals(1, foundUsers.size());
-        List<User> foundUsers2 = UserDAO.getInstance(emf).findUsersByCityName("Lyngby");
-        assertEquals(0, foundUsers2.size());
     }
 }

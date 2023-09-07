@@ -11,7 +11,6 @@ import java.util.Set;
 
 @Getter
 @NoArgsConstructor
-@ToString
 @Table(name = "zipcode")
 @NamedQueries({
         @NamedQuery(name = "Zip.findAll", query = "select z from Zip z"),

@@ -11,11 +11,10 @@ import java.util.Set;
 
 @Getter
 @NoArgsConstructor
-@ToString
 @Table(name = "users")
 @NamedQueries({
         @NamedQuery(name ="User.findAll", query = "SELECT g FROM User g"),
-        //@NamedQuery(name = "User.findByZip", query = "SELECT u FROM User u WHERE UserInfo.address.zip.cityName = :cityName")
+        @NamedQuery(name = "User.findByZip", query = "SELECT u FROM User u WHERE u.userInfo.address.zip.cityName = :cityName"),
 })
 @Entity
 public class User {
@@ -33,10 +32,10 @@ public class User {
     private String lastname;
 
 
-    @OneToOne (mappedBy = "user")
+    @OneToOne (mappedBy = "user", cascade = CascadeType.PERSIST)
     private  UserInfo userInfo;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     //@JoinColumn (name = "user_id")
 
     @JoinTable(name = "user_hobby",
@@ -46,10 +45,14 @@ public class User {
 
     private Set<Hobby> hobbies = new HashSet<>();
 
-    public User(String firstname, String lastname, UserInfo userInfo) {
+    public User(String firstname, String lastname) {
         this.firstname = firstname;
         this.lastname = lastname;
+    }
+
+    public void setUserInfo(UserInfo userInfo){
         this.userInfo = userInfo;
+        userInfo.setUser(this);
     }
 
     public void setInterest(Hobby hobby) {

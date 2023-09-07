@@ -7,11 +7,10 @@ import lombok.ToString;
 
 @Getter
 @NoArgsConstructor
-@ToString
 @Table(name = "address")
 @Entity
 @NamedQueries({
-        //@NamedQuery(name = "Address.deleteByUserID", query = "DELETE Address a WHERE Address.userInfo.id = :id")
+        @NamedQuery(name = "Address.deleteByUserID", query = "DELETE FROM Address a WHERE a.id = :id")
 })
 public class Address {
 
@@ -39,5 +38,11 @@ public class Address {
     }
 
 
+    public void setUserInfo(UserInfo userInfo) {
+        this.userInfo = userInfo;
+    }
 
+    public void setStreetName(String streetName) {
+        this.streetName = streetName;
+    }
 }

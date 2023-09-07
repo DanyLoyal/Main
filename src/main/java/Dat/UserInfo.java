@@ -12,9 +12,11 @@ import java.util.Set;
 
 @Getter
 @NoArgsConstructor
-@ToString
 @Table(name = "user_info")
 @Entity
+@NamedQueries({
+        @NamedQuery(name = "UserInfo.DeleteUserInfoByID", query = "DELETE FROM UserInfo u WHERE u.id = :id")
+})
 public class UserInfo {
 
     @Id
@@ -26,7 +28,7 @@ public class UserInfo {
     private int age;
 
 
-    @OneToOne (mappedBy = "userInfo")
+    @OneToOne (mappedBy = "userInfo", cascade = CascadeType.PERSIST)
     private Address address;
 
     @MapsId
@@ -36,9 +38,8 @@ public class UserInfo {
     @OneToMany(mappedBy = "userInfo")
     Set<Phonenumber> phonenumbers = new HashSet<>();
 
-    public UserInfo(String email, Address address, int age) {
+    public UserInfo(String email, int age) {
         this.email = email;
-        this.address = address;
         this.age = age;
         phonenumbers = new HashSet<>();
     }
@@ -50,10 +51,17 @@ public class UserInfo {
         phonenumber.setUserinfo(this);
     }
 
+    public void setAddress(Address address){
+        this.address = address;
+        address.setUserInfo(this);
+    }
+
     public void setEmail(String email){
         this.email = email;
     }
 
 
-
+    public void setUser(User user) {
+        this.user = user;
+    }
 }

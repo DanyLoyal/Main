@@ -2,21 +2,24 @@ package Dao;
 
 import Config.HibernateConfig;
 import DAO.UserDAO;
-import Dat.*;
+import DAO.ZipDAO;
+import Dat.Zip;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class UserDAOTest {
+class ZipDAOTest {
+
 
     private EntityManagerFactory emf = HibernateConfig.getEntityManagerFactoryConfig("hobby_test");
-    private UserDAO userDAO = UserDAO.getInstance(emf);
+    private ZipDAO zipDAO = ZipDAO.getInstance(emf);
 
     @BeforeEach
     void setUp() {
@@ -73,100 +76,88 @@ class UserDAOTest {
 
             em.getTransaction().commit();
         }
+
+        try (EntityManager em = emf.createEntityManager()) {
+            em.getTransaction().begin();
+
+            em.getTransaction().commit();
+        }
     }
 
     @AfterEach
     void tearDown() {
         try (EntityManager em = emf.createEntityManager()) {
             em.getTransaction().begin();
-            em.createNativeQuery("truncate address, user_info, users, phonenumber, hobby, hobby_hobby_info, hobby_info, user_hobby, zipcode RESTART IDENTITY;").executeUpdate();
+            em.createNativeQuery("truncate address, user_info, users, phonenumber, hobby, hobby_hobby_info, hobby_info, user_hobby, zipcode restart identity;").executeUpdate();
             em.getTransaction().commit();
         }
     }
 
+
     @Test
-    void createUser() {
-        Zip zip;
-        User createdUser;
+    void saveZip() {
+        // create Zip
+        Zip newCity = new Zip(3000, "helsingor", "hovedstaden", "helsingor_kommune");
+
         try (EntityManager em = emf.createEntityManager()) {
-            zip = em.find(Zip.class, 1);
-            createdUser = UserDAO.getInstance(emf).createUser(new User("Bent", "Den Store"), new UserInfo("bent@denstore.dk", 142), new Address("Ben den stores vej", zip, "69"));
+            //try
+            Zip actual = zipDAO.saveZip(newCity);
+            Zip expected = new Zip(3000, "helsingor", "hovedstaden", "helsingor_kommune");
+            //Expected
+            assertEquals(expected.getZip(),actual.getZip());
+            assertEquals(expected.getCityName(),actual.getCityName());
+            assertEquals(expected.getRegion(), actual.getRegion());
+            assertEquals(expected.getMunicipality(), actual.getMunicipality());
         }
-        assertEquals(4, createdUser.getId());
-        assertNotNull(createdUser.getUserInfo());
-        assertNotEquals(1, createdUser.getUserInfo().getAddress().getId());
+
+
     }
 
     @Test
-    void deleteUser() {
-        UserDAO.getInstance(emf).deleteUser(1);
-        User foundUser;
-        try(EntityManager em = emf.createEntityManager()){
-            foundUser = em.find(User.class, 1);
+    void updateZip() {
+
+        try (EntityManager em = emf.createEntityManager()) {
+            //try
+            Zip newCityUpdate = new Zip(7950, "Helsingør", "Region Nordjylland", "Morsø Kommune");
+            //if
+            Zip actual = zipDAO.updateZip(newCityUpdate);
+            Zip expected = new Zip(7950, "Helsingør", "Region Nordjylland", "Morsø Kommune");
+            //then
+            assertEquals(expected.getZip(),actual.getZip());
+            assertEquals(expected.getCityName(),actual.getCityName());
+            assertEquals(expected.getRegion(), actual.getRegion());
+            assertEquals(expected.getMunicipality(), actual.getMunicipality());
         }
-        assertNull(foundUser);
     }
 
     @Test
-    void findUserById() {
-        User foundUser = UserDAO.getInstance(emf).findUserById(3);
-        assertEquals("Gangsta", foundUser.getFirstname());
-        assertEquals("99", foundUser.getUserInfo().getAddress().getNumber());
-    }
-
-    @Test
-    void findUsers() {
-        List<User> foundUsers = UserDAO.getInstance(emf).findUsers();
-        assertEquals(3, foundUsers.size());
-        assertEquals(1, foundUsers.get(0).getId());
-    }
-
-    @Test
-    void updateUser() {
-        User foundUser;
-        Hobby foundHobby1;
-        Hobby foundHobby2;
-        try(EntityManager em = emf.createEntityManager()){
-            foundUser = em.find(User.class, 1);
-            foundHobby1 = em.find(Hobby.class, 1);
-            foundHobby2 = em.find(Hobby.class, 2);
+    void getCityByZip() {
+        try (EntityManager em = emf.createEntityManager()) {
+            // find city
+            Zip actual = zipDAO.getCityByZip(7960);
+            //if
+            Zip expected = new Zip(7960, "Karby", "Region Nordjylland", "Morsø Kommune");
+            //then
+            assertEquals(expected.getZip(),actual.getZip());
+            assertEquals(expected.getCityName(),actual.getCityName());
+            assertEquals(expected.getRegion(), actual.getRegion());
+            assertEquals(expected.getMunicipality(), actual.getMunicipality());
         }
-        foundUser = UserDAO.getInstance(emf).updateUser(foundUser, foundHobby1);
-        assertEquals(1, foundUser.getHobbies().size());
-        foundUser = UserDAO.getInstance(emf).updateUser(foundUser, foundHobby2);
-        assertEquals(2, foundUser.getHobbies().size());
     }
 
     @Test
-    void findUsersByHobby() {
-        try(EntityManager em = emf.createEntityManager()){
-            em.getTransaction().begin();
-            em.createNativeQuery("INSERT INTO public.user_hobby (user_id, hobby_id) VALUES (2, 1);").executeUpdate();
-            em.getTransaction().commit();
+    void getCitiesAndPostcodes() {
+        try (EntityManager em = emf.createEntityManager()) {
+
+            // Retrieve list of cities
+            List<Zip> actual = zipDAO.getCitiesAndPostcodes();
+            //if
+            List<Zip> expected = new ArrayList<>(2);
+            //then
+            assertNotEquals(actual,expected);
+
+
+
         }
-        List<User> usersForHobby1 = UserDAO.getInstance(emf).findUsersByHobby(1);
-        assertEquals(2, usersForHobby1.size());
-        List<User> usersForHobby2 = UserDAO.getInstance(emf).findUsersByHobby(2);
-        assertEquals(1, usersForHobby2.size());
-    }
-
-    @Test
-    void findUsersByPhonenumber() {
-        Phonenumber phonenumber;
-        try(EntityManager em = emf.createEntityManager()){
-            phonenumber = em.find(Phonenumber.class, 2);
-        }
-        User foundUser = UserDAO.getInstance(emf).findUserByPhonenumber(phonenumber);
-        assertEquals("Carsten", foundUser.getFirstname());
-        assertEquals("Danyalsen", foundUser.getLastname());
-        assertEquals(1, foundUser.getId());
-    }
-
-    @Test
-    void findUsersByCityName() {
-        List<User> foundUsers = UserDAO.getInstance(emf).findUsersByCityName("Karby");
-        assertEquals(1, foundUsers.size());
-        List<User> foundUsers2 = UserDAO.getInstance(emf).findUsersByCityName("Lyngby");
-        assertEquals(0, foundUsers2.size());
     }
 }
