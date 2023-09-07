@@ -1,4 +1,4 @@
-package Dao;
+package DAO;
 
 import Dat.Phonenumber;
 import Dat.User;
