@@ -11,7 +11,7 @@ import java.util.Set;
 
 @Getter
 @NoArgsConstructor
-@ToString
+
 @Table(name ="hobby")
 @NamedQueries({
         @NamedQuery(name ="Hobby.findAllHobbies", query = "SELECT h FROM Hobby h")
@@ -32,7 +32,7 @@ public class Hobby {
     @ManyToMany(mappedBy = "hobbies")
     private  Set<User>users = new HashSet<>();
 
-    @ManyToMany
+    @ManyToMany()
     @JoinTable(name = "hobby_hobby_info",
             joinColumns = @JoinColumn(name = "hobby_id"),
             inverseJoinColumns = @JoinColumn(name = "hobby_info_id")
